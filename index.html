@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CineMatch</title>
     <link rel="stylesheet" href="./dist/output.css" />
-    <script src="./src/script.js" defer></script>
+    <script type="module" src="./src/script.js" defer></script>
     <style>
       body {
         background-image: radial-gradient(
@@ -41,6 +41,13 @@
 
       body::after {
         right: 12px;
+      }
+
+      @media (max-width: 640px) {
+        body::before,
+        body::after {
+          display: none;
+        }
       }
       header h1{
         animation: animaSombra 2.4s infinite ease-in-out;
@@ -85,7 +92,7 @@
         </path>
         </svg>
       </h1>
-      <ul class="flex gap-6 items-center justify-center font-mono">
+      <ul class="flex flex-wrap gap-4 sm:gap-6 items-center justify-center font-mono px-4">
         <li>
           <button class="group flex gap-2 cursor-pointer rounded-full border-2 border-light-roxo/50 hover:text-dourado bg-dark-roxo shadow-light-roxo transition-all duration-200 hover:shadow-[3px_3px_0_rgba(0,0,0,1)] py-2 px-6">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="fill-[#9a8fc0] group-hover:fill-dourado" viewBox="0 0 256 256"><path d="M192,112a80,80,0,1,1-80-80A80,80,0,0,1,192,112Z" opacity="0.2"></path><path d="M229.66,218.34,179.6,168.28a88.21,88.21,0,1,0-11.32,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"></path></svg> Buscar
@@ -104,102 +111,26 @@
 
     </header>
     <main class="mx-auto flex min-h-screen max-w-6xl flex-col justify-center px-6">
-      <form id="searchForm" class="mt-8 flex justify-center items-center gap-3 border-b-2 border-salmao/10 pb-4">
-        <input id="searchInput" type="search" placeholder="Busque por filme ou série" class="w-72 rounded-full bg-branco/10 border border-dourado/40 px-4 py-3 text-branco outline-none">
+      <form id="searchForm" class="mt-8 flex justify-center items-center gap-3 border-b-2 border-salmao/10 pb-4 px-4 sm:px-0">
+        <input id="searchInput" type="search" placeholder="Busque por filme ou série" class="w-full max-w-[280px] sm:max-w-none sm:w-72 rounded-full bg-branco/10 border border-dourado/40 px-4 py-3 text-branco outline-none">
         <button type="submit" class="font-mono rounded-full bg-dourado border border-dourado/20 hover:brightness-120 hover:bg-dourado p-3 font-dados text-dourado hover:text-dark-azul cursor-pointer transition-all duration-200">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="fill-[#0B0B14] group-hover:fill-dourado" viewBox="0 0 256 256"><path d="M192,112a80,80,0,1,1-80-80A80,80,0,0,1,192,112Z" opacity="0.2"></path><path d="M229.66,218.34,179.6,168.28a88.21,88.21,0,1,0-11.32,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"></path></svg>
         </button>
       </form>
       <!--sessão de cards dos filmes-->
-      <section class="mx-auto grid grid-cols-3 gap-4 min-h-screen max-w-6xl px-6 mt-4">
-        <div class="col-start-1 col-span-3 flex items-center justify-between gap-8">
-          <h1 class="font-bebas text-6xl text-dourado py-4 ">Resultados</h1>
-          <ul class="flex gap-4">
-            <li class="text-xl font-bebas text-salmao border border-branco/10 bg-branco/5 hover:border-salmao/50 backdrop-blur-lg px-6 py-2 rounded-full transition-all duration-200 cursor-pointer">Todos</li>
-            <li class="text-xl font-bebas text-salmao border border-branco/10 bg-branco/5 hover:border-salmao/50 backdrop-blur-lg px-6 py-2 rounded-full transition-all duration-200 cursor-pointer">Filmes</li>
-            <li class="text-xl font-bebas text-salmao border border-branco/10 bg-branco/5 hover:border-salmao/50 backdrop-blur-lg px-6 py-2 rounded-full transition-all duration-200 cursor-pointer">Séries</li>
+      <section class="mx-auto flex flex-col gap-6 min-h-screen max-w-6xl px-4 sm:px-6 mt-4">
+        <!--filtros-->
+        <div class="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-8">
+          <h1 class="font-bebas text-5xl sm:text-6xl text-dourado py-2 sm:py-4 text-center md:text-left">Resultados</h1>
+          <ul class="flex flex-wrap justify-center gap-2 sm:gap-4">
+            <li id="todos" class="text-lg sm:text-xl font-bebas text-salmao border border-branco/10 bg-branco/5 hover:border-salmao/50 backdrop-blur-lg px-4 sm:px-6 py-1 sm:py-2 rounded-full transition-all duration-200 cursor-pointer">Todos</li>
+            <li id="filmes" class="text-lg sm:text-xl font-bebas text-salmao border border-branco/10 bg-branco/5 hover:border-salmao/50 backdrop-blur-lg px-4 sm:px-6 py-1 sm:py-2 rounded-full transition-all duration-200 cursor-pointer">Filmes</li>
+            <li id="series" class="text-lg sm:text-xl font-bebas text-salmao border border-branco/10 bg-branco/5 hover:border-salmao/50 backdrop-blur-lg px-4 sm:px-6 py-1 sm:py-2 rounded-full transition-all duration-200 cursor-pointer">Séries</li>
           </ul>
         </div>
-        <div class="relative aspect-2/3 hover:scale-[1.02] transition-transform duration-300 cursor-pointer bg-dark-azul text-branco border border-branco/20 overflow-hidden rounded-lg flex flex-col gap-4">
-          <span class="absolute top-2 left-2 bg-salmao text-dark-azul text-xs font-bold font-mono uppercase shadow-lg px-2 py-1 rounded-lg">
-            filme
-          </span>
-          <img class="w-full h-96 object-cover" src="https://br.web.img3.acsta.net/r_1280_720/pictures/19/07/25/20/52/1819461.jpg" alt="poster interestelar">
-          <!--dados-->
-          <div class="absolute z-10 bottom-0 w-full px-4 py-2 bg-branco/5 backdrop-blur">
-            <div class="flex gap-4 items-center justify-between">
-              <h2 class="truncate flex gap-1 font-inter text-2xl text-branco font-semibold">
-                <img src="img/ticket-duotone.svg" alt="">
-                Bacurau
-              </h2>
-              <span class="flex gap-1 text-sm bg-dark-azul/40 px-1 py-1 rounded-lg"> <img src="img/star-duotone.svg" alt="">8.7</span>
-            </div>
-            <div>
-              <span class="text-sm text-branco/50">2014</span>
-              <span class="text-sm text-branco/50">|</span>
-              <span class="text-sm text-branco/50">2h35min</span>
-            </div>
-          </div>
-        </div>
-        <div class="relative aspect-2/3 hover:scale-[1.02] transition-transform duration-300 cursor-pointer bg-dark-azul text-branco border border-branco/20 overflow-hidden rounded-lg flex flex-col gap-4">
-          <span class="absolute top-2 left-2 bg-salmao text-dark-azul text-xs font-bold font-mono uppercase shadow-lg px-2 py-1 rounded-lg">
-            série
-          </span>
-          <img class="w-full h-96 object-cover" src="https://i.ebayimg.com/images/g/PpcAAOSw2qdi1CWb/s-l1200.jpg" alt="poster interestelar">
-          <!--dados-->
-          <div class="absolute z-10 bottom-0 w-full px-4 py-2 bg-branco/10 backdrop-blur-2xl">
-            <div class="flex gap-4 items-center justify-between">
-              <h2 class="truncate flex gap-1 font-inter text-2xl text-branco font-semibold">
-                <img src="img/ticket-duotone.svg" alt="">
-                Breaking Bad
-              </h2>
-              <span class="flex gap-1 text-xs bg-dark-azul/40 px-2 py-1 rounded-lg"> <img src="img/star-duotone.svg" alt="">8.7</span>
-            </div>
-            <div>
-              <span class="text-sm text-branco/50">2008</span>
-              <span class="text-sm text-branco/50">|</span>
-              <span class="text-sm text-branco/50">5T</span>
-            </div>
-          </div>
-        </div>
-        <div class="relative hover:scale-[1.02] transition-transform duration-300 cursor-pointer bg-dark-azul text-branco border border-branco/20 overflow-hidden rounded-lg flex flex-col gap-4">
-          <span class="absolute top-2 left-2 bg-salmao text-dark-azul text-xs font-bold font-mono uppercase shadow-lg px-2 py-1 rounded">
-            filme
-          </span>
-          <img class="w-full h-96 object-cover" src="https://br.web.img3.acsta.net/img/03/4f/034f680ce275370ba66455bfb78caba0.jpg" alt="poster interestelar">
-          <!--dados-->
-          <div class="absolute z-10 bottom-0 w-full px-4 py-2 bg-branco/10 backdrop-blur-2xl">
-            <div class="flex gap-4 items-center justify-between">
-              <h2 class="truncate flex gap-1 font-inter text-2xl text-branco font-semibold">
-                <img src="img/ticket-duotone.svg" alt="">
-                Deadpool
-              </h2>
-              <span class="flex gap-1 text-sm bg-dark-azul/40 px-1 py-1 rounded-lg"> <img src="img/star-duotone.svg" alt="">8.7</span>
-            </div>
-            <div>
-              <span class="text-sm text-branco/50">2019</span>
-              <span class="text-sm text-branco/50">|</span>
-              <span class="text-sm text-branco/50">2h00min</span>
-            </div>
-          </div>
-        </div>
-        <div class="relative hover:scale-[1.02] transition-transform duration-300 cursor-pointer bg-dark-azul text-branco border border-branco/20 overflow-hidden rounded-lg flex flex-col gap-4">
-          <img class="w-full h-96 object-cover" src="https://image.tmdb.org/t/p/original/gSnbhR0vftfJ2U6KpGmR7WzZlVo.jpg" alt="poster interestelar">
-          <!--dados-->
-          <div class="absolute z-10 bottom-0 w-full px-4 py-2 bg-branco/10 backdrop-blur-2xl">
-            <div class="flex gap-4 items-center justify-between">
-              <h2 class="truncate flex gap-1 font-inter text-2xl text-branco font-semibold">
-                <img src="img/ticket-duotone.svg" alt="">
-                Pulp Fiction
-              </h2>
-              <span class="flex gap-1 text-sm bg-dark-azul/40 px-1 py-1 rounded-lg"> <img src="img/star-duotone.svg" alt="">8.7</span>
-            </div>
-            <div>
-              <span class="text-sm text-branco/50">1994</span>
-              <span class="text-sm text-branco/50">|</span>
-              <span class="text-sm text-branco/50">2h05min</span>
-            </div>
-          </div>
+        <!--filmes-->
+        <div id="containerFilmes" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 mt-4">
+          <!-- Os cards dinâmicos serão inseridos aqui -->
         </div>
       </section>
     </main>
