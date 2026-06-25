@@ -1,0 +1,15 @@
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --color-dark-azul: #0B0B14;
+  --color-dark-roxo: #2E2150;
+  --color-dourado: #F5B942;
+  --color-salmao: #FF6F61;
+  --color-branco: #F7F3E8;
+  --color-light-roxo: #9A8FC0;
+
+  --font-bebas: "Bebas Neue", sans-serif;
+  --font-inter: "Inter", sans-serif;
+  --font-mono: "Space Mono", monospace;
+}
