@@ -126,7 +126,7 @@
         </div>
       </form>
       <!--sessão de cards dos filmes-->
-      <section class="mx-auto flex flex-col gap-6 min-h-screen max-w-6xl px-4 sm:px-6 mt-4">
+      <section class="mx-auto flex flex-col gap-6 min-h-screen max-w-6xl px-4 py-6 sm:px-6 mt-4">
         <!--filtros-->
         <div class="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-8">
           <h1 id="tituloSecao" class="font-bebas text-5xl sm:text-6xl text-dourado py-2 sm:py-4 text-center md:text-left transition-all duration-300 transform">Em alta</h1>
@@ -139,6 +139,12 @@
         <!--filmes-->
         <div id="containerFilmes" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 mt-4">
           <!-- Os cards dinâmicos serão inseridos aqui -->
+        </div>
+
+        <div class="flex justify-center mt-8 hidden" id="containerCarregarMais">
+          <button id="btnCarregarMais" class="bg-dark-azul border border-dourado text-dourado hover:bg-dourado hover:text-dark-azul font-bebas text-xl px-12 py-3 rounded-full transition-all duration-300 shadow-[0_0_15px_rgba(245,185,66,0.2)] hover:shadow-[0_0_25px_rgba(245,185,66,0.5)] cursor-pointer">
+            Carregar Mais
+          </button>
         </div>
       </section>
     </main>

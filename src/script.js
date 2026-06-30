@@ -3,6 +3,12 @@ import {TMDB_CONFIG} from './config.js'
 const form = document.getElementById('searchForm')
 const input = document.getElementById('searchInput')
 const containerFilmes = document.getElementById('containerFilmes')
+const btnCarregar = document.getElementById('btnCarregarMais')
+const containerCarregar = document.getElementById('containerCarregarMais')
+let paginaAtual = 1
+let modoAtual = 'tendencias';
+let pesquisaAtual = '';
+
 
 // Dicionário para traduzir os IDs numéricos que a API devolve para os nomes reais
 const GENEROS_TMDB = {
@@ -34,24 +40,44 @@ document.addEventListener('DOMContentLoaded', () => {
     buscarTendencias()
 })
 
-async function buscarTendencias() {
-    mudarTituloAnimado('Em alta')
-    const url = `${TMDB_CONFIG.BASE_URL}/trending/all/week?api_key=${TMDB_CONFIG.API_KEY}&language=${TMDB_CONFIG.LANGUAGE}`
+async function buscarTendencias(pagina = 1) {
+    if(pagina === 1) mudarTituloAnimado('Em alta')
+    const url = `${TMDB_CONFIG.BASE_URL}/trending/all/week?api_key=${TMDB_CONFIG.API_KEY}&language=${TMDB_CONFIG.LANGUAGE}&page=${pagina}`
     try{
         const resposta = await fetch(url)
         const dados = await resposta.json()
 
-        listagem = dados.results.filter(item => item.media_type === 'movie' || item.media_type === 'tv')
+        const listagemNova = dados.results.filter(item => item.media_type === 'movie' || item.media_type === 'tv')
         console.log('titulos em alta carregados: ',listagem )
+        modoAtual = 'tendencias'
+        paginaAtual = pagina
 
-        renderizarFilmes(listagem)
+        if(pagina === 1){
+            listagem = listagemNova
+        }else{
+            listagem = listagem.concat(listagemNova)
+        }
+
+        let filmesParaDesenhar = listagemNova
+        if(filtroAtivo === 'movie') filmesParaDesenhar = filmesParaDesenhar.filter(obra => obra.media_type === 'movie')
+        if(filtroAtivo === 'tv') filmesParaDesenhar = filmesParaDesenhar.filter(obra => obra.media_type === 'tv')
+
+        renderizarFilmes(filmesParaDesenhar, pagina === 1)
+
+        if(dados.total_pages > pagina){
+            containerCarregar.classList.remove('hidden');
+        }else{
+            containerCarregar.classList.add('hidden');
+        }
     }catch(error){
         console.log("Erro ao buscar tendências: ", error)
     }
 }
 
-function renderizarFilmes(filmes){
-    containerFilmes.innerHTML = ''
+function renderizarFilmes(filmes, limpar = true){
+    if(limpar){
+        containerFilmes.innerHTML = ''
+    }
 
     filmes.forEach((obra, index) => {
         const tipoObra = obra.media_type === 'movie'
@@ -156,17 +182,41 @@ input.addEventListener('input', () => {
     }, 300)
 })
 
-async function buscarPesquisa(texto){
-    mudarTituloAnimado(`Resultados para "${texto}"`)
-    const url = `${TMDB_CONFIG.BASE_URL}/search/multi?api_key=${TMDB_CONFIG.API_KEY}&language=${TMDB_CONFIG.LANGUAGE}&query=${encodeURIComponent(texto)}`;
+async function buscarPesquisa(texto, pagina = 1) {
+    if (pagina === 1) mudarTituloAnimado(`Resultados para "${texto}"`);
 
-    try{
+    const url = `${TMDB_CONFIG.BASE_URL}/search/multi?api_key=${TMDB_CONFIG.API_KEY}&language=${TMDB_CONFIG.LANGUAGE}&query=${encodeURIComponent(texto)}&page=${pagina}`;
+
+    try {
         const resposta = await fetch(url)
         const dados = await resposta.json()
 
-        listagem = dados.results.filter(item => item.media_type === 'movie' || item.media_type === 'tv')
-        renderizarFilmes(listagem)
-    }catch (error){
+        const resultadosNovos = dados.results.filter(item => item.media_type === 'movie' || item.media_type === 'tv')
+
+        // Atualizando a memória
+        modoAtual = 'pesquisa';
+       pesquisaAtual = texto;
+        paginaAtual = pagina;
+
+        if (pagina === 1) {
+            listagem = resultadosNovos;
+        } else {
+            listagem = listagem.concat(resultadosNovos);
+        }
+
+        let filmesParaDesenhar = resultadosNovos;
+        if (filtroAtivo === 'movie') filmesParaDesenhar = filmesParaDesenhar.filter(obra => obra.media_type === 'movie');
+        if (filtroAtivo === 'tv') filmesParaDesenhar = filmesParaDesenhar.filter(obra => obra.media_type === 'tv');
+
+        renderizarFilmes(filmesParaDesenhar, pagina === 1);
+
+        // Lógica do botão Carregar Mais
+        if (dados.total_pages > pagina) {
+            containerCarregarMais.classList.remove('hidden');
+        } else {
+            containerCarregarMais.classList.add('hidden');
+        }
+    } catch (error) {
         console.log(error)
     }
 }
@@ -205,16 +255,19 @@ function initFiltro(){
 
     if (filtroTodos && filtroFilme && filtroSerie) {
         filtroTodos.addEventListener('click', () => {
+            filtroAtivo = 'todos'
             filtrarLista('todos');
             ativarBotao(filtroTodos);
         });
 
         filtroFilme.addEventListener('click', () => {
+            filtroAtivo = 'movie'
             filtrarLista('movie');
             ativarBotao(filtroFilme);
         });
 
         filtroSerie.addEventListener('click', () => {
+            filtroAtivo = 'tv'
             filtrarLista('tv');
             ativarBotao(filtroSerie);
         });
@@ -442,4 +495,13 @@ document.addEventListener('keydown', (event) => {
 })
 
 const modalTrailerBtn = document.getElementById('modalTrailerBtn');
+btnCarregar.addEventListener('click', () => {
+    const proxPagina = paginaAtual + 1
+
+    if(modoAtual === 'tendencias'){
+        buscarTendencias(proxPagina)
+    }else if(modoAtual === 'pesquisa'){
+        buscarPesquisa(pesquisaAtual, proxPagina)
+    }
+})
 
