@@ -258,7 +258,7 @@ async function initModalDetalhes(id, mediaType){
     modalConteudo.classList.remove('flex');
     modalConteudo.classList.add('hidden');
 
-    const urlDetalhes = `${TMDB_CONFIG.BASE_URL}/${mediaType}/${id}?api_key=${TMDB_CONFIG.API_KEY}&language=${TMDB_CONFIG.LANGUAGE}`;
+    const urlDetalhes = `${TMDB_CONFIG.BASE_URL}/${mediaType}/${id}?api_key=${TMDB_CONFIG.API_KEY}&language=${TMDB_CONFIG.LANGUAGE}&append_to_response=videos`;
     const urlProvedores = `${TMDB_CONFIG.BASE_URL}/${mediaType}/${id}/watch/providers?api_key=${TMDB_CONFIG.API_KEY}`;
 
     try{
@@ -343,6 +343,16 @@ async function initModalDetalhes(id, mediaType){
         `).join('')
 
         modalSinopse.textContent = detalhes.overview || 'Sinopse não disponível em português.'
+        modalTrailerBtn.classList.add('hidden')
+        modalTrailerBtn.href = '#'
+
+        if(detalhes.videos && detalhes.videos.results){
+            const trailer = detalhes.videos.results.find(video => video.type === 'Trailer' && video.site === 'YouTube')
+            if(trailer){
+                modalTrailerBtn.href = `https://www.youtube.com/watch?v=${trailer.key}`;
+                modalTrailerBtn.classList.remove('hidden')
+            }
+        }
 
         const provedoresBR = provedores.results ? provedores.results.BR : null
         modalProvedores.innerHTML = ''
@@ -430,3 +440,6 @@ document.addEventListener('keydown', (event) => {
         fecharModal()
     }
 })
+
+const modalTrailerBtn = document.getElementById('modalTrailerBtn');
+
