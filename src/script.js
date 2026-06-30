@@ -21,12 +21,21 @@ const tituloSecao = document.getElementById('tituloSecao')
 
 let listagem = []
 
+// Função para mudar o título com uma animação suave
+function mudarTituloAnimado(novoTexto) {
+    tituloSecao.classList.add('opacity-0', '-translate-y-2');
+    setTimeout(() => {
+        tituloSecao.textContent = novoTexto;
+        tituloSecao.classList.remove('opacity-0', '-translate-y-2');
+    }, 200); 
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     buscarTendencias()
 })
 
 async function buscarTendencias() {
-    tituloSecao.textContent = 'Em alta'
+    mudarTituloAnimado('Em alta')
     const url = `${TMDB_CONFIG.BASE_URL}/trending/all/week?api_key=${TMDB_CONFIG.API_KEY}&language=${TMDB_CONFIG.LANGUAGE}`
     try{
         const resposta = await fetch(url)
@@ -148,7 +157,7 @@ input.addEventListener('input', () => {
 })
 
 async function buscarPesquisa(texto){
-    tituloSecao.textContent = `Resultados para  ${texto}`
+    mudarTituloAnimado(`Resultados para "${texto}"`)
     const url = `${TMDB_CONFIG.BASE_URL}/search/multi?api_key=${TMDB_CONFIG.API_KEY}&language=${TMDB_CONFIG.LANGUAGE}&query=${encodeURIComponent(texto)}`;
 
     try{
