@@ -13,6 +13,8 @@ const telaBuscar = document.getElementById('telaBusca')
 const telaRoleta = document.getElementById('telaRoleta')
 const btnRoleta = document.getElementById('btnRoleta')
 const btnQuiz = document.getElementById('btnQuiz')
+const telaQuiz = document.getElementById('telaQuiz')
+const quizContainer = document.getElementById('quizContainer')
 
 
 // Dicionário para traduzir os IDs numéricos que a API devolve para os nomes reais
@@ -541,20 +543,38 @@ function trocarTela(tela){
     if(tela === 'busca'){
         telaBuscar.classList.remove('hidden')
         telaBuscar.classList.add('animate-aparecer')
+
         telaRoleta.classList.add('hidden')
         telaRoleta.classList.remove('animate-aparecer')
+        
+        telaQuiz.classList.add('hidden')
+        telaQuiz.classList.remove('animate-aparecer')
     }else if(tela === 'roleta'){
         telaRoleta.classList.remove('hidden')
         telaRoleta.classList.add('animate-aparecer')
+
         telaBuscar.classList.add('hidden')
         telaBuscar.classList.remove('animate-aparecer')
+        
+        telaQuiz.classList.add('hidden')
+        telaQuiz.classList.remove('animate-aparecer')
 
         abrirRoleta()
+    }else if(tela === 'quiz'){
+        telaQuiz.classList.remove('hidden')
+        telaQuiz.classList.add('animate-aparecer')
+
+        telaRoleta.classList.add('hidden')
+        telaRoleta.classList.remove('animate-aparecer')
+
+        telaBuscar.classList.add('hidden')
+        telaBuscar.classList.remove('animate-aparecer')
     }
 }
 
 btnBuscar.addEventListener('click', () => trocarTela('busca'))
 btnRoleta.addEventListener('click', () => trocarTela('roleta'))
+btnQuiz.addEventListener('click', () => trocarTela('quiz'))
 
 const roletaPista = document.getElementById('roletaPista')
 const btnGirarRoleta = document.getElementById('btnGirarRoleta')
@@ -630,3 +650,165 @@ btnGirarRoleta.addEventListener('click', () =>{
         renderizarFilmesRoleta(filmesRoleta)
     }, 5500)
 })
+
+const perguntas = [
+    {
+        pergunta: "Qual é o humor do dia?",
+        opcoes: [
+            { texto: "Comédia", valor: "35" },
+            { texto: "Ação/Aventura", valor: "28,12" },
+            { texto: "Suspense/Mistério", valor: "53,9648" },
+            { texto: "Drama", valor: "18" },
+            { texto: "Terror", valor: "27" },
+            { texto: "Romance", valor: "10749" }
+        ],
+        tipoFiltro: "genre"
+    },
+    {
+        pergunta: "Você quer algo de qual época?",
+        opcoes: [
+            { texto: "Antes dos anos 2000", valor: "classic" },
+            { texto: "Anos 2000 a 2015", valor: "modern" },
+            { texto: "2016 até hoje", valor: "recent" }
+        ],
+        tipoFiltro: "era"
+    },
+    {
+        pergunta: "Quanto tempo quer ficar assistindo?",
+        opcoes: [
+            {texto: "Ritmo rápido/curto", valor: "short" },
+            { texto: "Tamanho normal", valor: "medium" },
+            { texto: "Longo/Muitas temporadas", valor: "long" }
+        ],
+        tipoFiltro: "pace"
+    }
+]
+
+let perguntaAtual = 0
+let respostasUsuario = {}
+
+const btnIniciarQuiz = document.getElementById('btnIniciarQuiz')
+const quizSubtitulo = document.getElementById('quizSubtitulo')
+
+// Cria a função global para iniciar/reiniciar o quiz
+window.iniciarQuiz = function() {
+    perguntaAtual = 0
+    respostasUsuario = { mediaType: 'movie' }
+    quizSubtitulo.classList.add('hidden')
+    const h2 = document.querySelector('#telaQuiz h2')
+    h2.classList.add('hidden')
+    renderizarPergunta()
+}
+
+// O botão "Começar" inicial agora apenas chama essa função
+btnIniciarQuiz.addEventListener('click', window.iniciarQuiz)
+
+function renderizarPergunta() {
+    if(perguntaAtual >= perguntas.length) {
+        calcularResultadoQuiz()
+        return
+    }
+
+    const dadosPerguntas = perguntas[perguntaAtual]
+
+    let opcoesQuiz = dadosPerguntas.opcoes.map(opcao => `<button onclick="responderQuiz('${dadosPerguntas.tipoFiltro}', '${opcao.valor}')"
+    class="w-full text-left bg-dark-roxo/50 border border-light-roxo/30 hover:border-dourado hover:bg-light-roxo/20 hover:scale-[1.01] text-branco font-inter text-sm sm:text-lg px-6 py-4 rounded-xl transition-all duration-200 shadow-md">
+        ${opcao.texto}</button>`).join('');
+
+    quizContainer.innerHTML = `
+        <h3 class="font-bebas text-2xl sm:text-3xl text-salmao mb-6 w-full text-left animate-aparecer">${dadosPerguntas.pergunta}</h3>
+        <div class="flex flex-col gap-3 w-full animate-aparecer">
+            ${opcoesQuiz}
+        </div>`
+}
+
+window.responderQuiz = function (tipoFiltro, opcaoEscolhida){
+    respostasUsuario[tipoFiltro] = opcaoEscolhida
+
+    perguntaAtual++
+    renderizarPergunta()
+}
+
+async function calcularResultadoQuiz() {
+    quizContainer.innerHTML = ` <div class="flex flex-col items-center justify-center py-10 animate-pulse">
+            <h3 class="font-bebas text-4xl text-salmao">Achando seu filme/série perfeito...</h3>
+        </div>`
+
+    const mediaType = respostasUsuario.mediaType
+
+    let url = `${TMDB_CONFIG.BASE_URL}/discover/${mediaType}?api_key=${TMDB_CONFIG.API_KEY}&language=${TMDB_CONFIG.LANGUAGE}&with_genres=${respostasUsuario.genre}&sort_by=popularity.desc`
+
+    const filtroEpoca = mediaType === 'movie' ? 'primary_release_date' : 'first_air_date'
+
+    if(respostasUsuario.era === 'classic'){
+        url += `&${filtroEpoca}.lte=1999-12-31`
+    }else if(respostasUsuario.era === 'modern'){
+        url += `&${filtroEpoca}.gte=2000-01-01&${filtroEpoca}.lte=2015-12-31`
+    }else if(respostasUsuario.era === 'recent'){
+        const dataHoje = new Date().toISOString().split('T')[0]
+        url += `&${filtroEpoca}.gte=2016-01-01&${filtroEpoca}.lte=${dataHoje}`
+    }
+
+    // Garante que o filme está disponível para ser assistido no Brasil (Streaming, Aluguel ou Compra)
+    url += `&watch_region=BR&with_watch_monetization_types=flatrate|free|ads|rent|buy`
+
+    if(mediaType === 'movie'){
+        if(respostasUsuario.pace === 'short'){
+            url += `&with_runtime.lte=100`
+        }else if(respostasUsuario.pace === 'medium'){
+            url += `&with_runtime.gte=100&with_runtime.lte=140`
+        }else if(respostasUsuario.pace === 'long'){
+            url += `&with_runtime.gte=140`
+        }
+    }
+
+    try{
+        const resposta = await fetch(url)
+        const dados = await resposta.json()
+
+        const resultadosValidos = dados.results.filter(dado => dado.poster_path)
+        if(resultadosValidos.length > 0){
+            const max = Math.min(5, resultadosValidos.length)
+            const filmeAleatorio = Math.floor(Math.random() * max)
+            const match = resultadosValidos[filmeAleatorio]
+            mostrarResultadoQuiz(match, mediaType)
+        }else{
+            quizContainer.innerHTML = `
+                <h3 class="font-bebas text-3xl text-salmao mb-4 text-center">Poxa, você é muito exigente!</h3>
+                <p class="text-branco/70 mb-6 text-center">Nenhum diretor produziu um título com exatamente essas características ainda. Tente flexibilizar nas respostas!</p>
+                <button onclick="iniciarQuiz()" class="bg-branco/10 px-6 py-2 rounded-full hover:bg-salmao hover:text-dark-azul">Tentar Novamente</button>
+            `
+        }
+    }catch (error) {
+        console.log(error)
+    }
+}
+
+function mostrarResultadoQuiz(obra, mediaType) {
+    const posterUrl = `${TMDB_CONFIG.IMAGE_BASE_URL}${obra.poster_path}`
+    const titulo = obra.title || obra.name
+
+    quizContainer.innerHTML = `
+        <div class="flex flex-col md:flex-row items-center gap-8 w-full animate-aparecer bg-dark-azul/30 p-6 rounded-2xl border border-dourado/20">
+            <img src="${posterUrl}" class="w-48 sm:w-56 rounded-xl">
+            
+            <div class="flex flex-col items-center md:items-start text-center md:text-left">
+                <h3 class="font-bebas text-4xl sm:text-5xl text-dourado mb-4">${titulo}</h3>
+                
+                <p class="text-branco/70 text-sm sm:text-base mb-8 line-clamp-3">${obra.overview || 'Uma jornada inesquecível espera por você.'}</p>
+                
+                <div class="flex flex-col sm:flex-row gap-4 w-full mt-auto">
+                    <button id="btnDetalhesResultado" class="bg-dourado text-sm text-dark-azul font-bold px-6 py-3 sm:px-6 sm:py-2 rounded-full hover:bg-salmao transition-colors shadow-lg w-full sm:w-auto whitespace-nowrap">
+                        VER DETALHES
+                    </button>
+                    <button onclick="iniciarQuiz()" class="bg-transparent border text-sm border-branco/20 text-branco font-bold px-6 py-3 sm:px-6 sm:py-2 rounded-full hover:bg-branco/10 transition-colors w-full sm:w-auto whitespace-nowrap">
+                        Refazer Quiz
+                    </button>
+                </div>
+            </div>
+        </div>`
+
+    document.getElementById('btnDetalhesResultado').addEventListener('click', () => {
+        initModalDetalhes(obra.id, mediaType)
+    })
+}
