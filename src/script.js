@@ -8,6 +8,11 @@ const containerCarregar = document.getElementById('containerCarregarMais')
 let paginaAtual = 1
 let modoAtual = 'tendencias';
 let pesquisaAtual = '';
+const btnBuscar = document.getElementById('btnBuscar')
+const telaBuscar = document.getElementById('telaBusca')
+const telaRoleta = document.getElementById('telaRoleta')
+const btnRoleta = document.getElementById('btnRoleta')
+const btnQuiz = document.getElementById('btnQuiz')
 
 
 // Dicionário para traduzir os IDs numéricos que a API devolve para os nomes reais
@@ -292,6 +297,7 @@ async function initModalDetalhes(id, mediaType){
     const modalTagline = document.getElementById('modalTagline');
     const modalAnoTexto = document.getElementById('modalAnoTexto');
     const modalNota = document.getElementById('modalNota');
+    const modalClassificacao = document.getElementById('modalClassificacao');
     const modalDuracaoTexto = document.getElementById('modalDuracaoTexto');
     const modalIdiomasTexto = document.getElementById('modalIdiomasTexto');
     const modalGeneros = document.getElementById('modalGeneros');
@@ -311,7 +317,7 @@ async function initModalDetalhes(id, mediaType){
     modalConteudo.classList.remove('flex');
     modalConteudo.classList.add('hidden');
 
-    const urlDetalhes = `${TMDB_CONFIG.BASE_URL}/${mediaType}/${id}?api_key=${TMDB_CONFIG.API_KEY}&language=${TMDB_CONFIG.LANGUAGE}&append_to_response=videos`;
+    const urlDetalhes = `${TMDB_CONFIG.BASE_URL}/${mediaType}/${id}?api_key=${TMDB_CONFIG.API_KEY}&language=${TMDB_CONFIG.LANGUAGE}&append_to_response=videos,release_dates,content_ratings`;
     const urlProvedores = `${TMDB_CONFIG.BASE_URL}/${mediaType}/${id}/watch/providers?api_key=${TMDB_CONFIG.API_KEY}`;
 
     try{
@@ -373,6 +379,32 @@ async function initModalDetalhes(id, mediaType){
         }
 
         modalNota.textContent = detalhes.vote_average ? detalhes.vote_average.toFixed(1) : '0.0';
+
+        // Lógica da Classificação Indicativa
+        let classificacao = 'L'
+        if(isFilme && detalhes.release_dates){
+            const dadosBr = detalhes.release_dates.results.find(dado => dado.iso_3166_1 === 'BR')
+            if(dadosBr){
+                const certificacao = dadosBr.release_dates.find(dado => dado.certification)
+                if(certificacao) classificacao = certificacao.certification
+            }
+        }else if(!isFilme && detalhes.content_ratings){
+            const dadosBr = detalhes.content_ratings.results.find(dado => dado.iso_3166_1 === 'BR')
+            if(dadosBr && dadosBr.rating){
+                classificacao = dadosBr.rating
+            }
+        }
+
+        let corFundo = 'bg-[#00a54f] text-branco'; 
+        if (classificacao === '10') corFundo = 'bg-[#0093d5] text-branco'; 
+        else if (classificacao === '12') corFundo = 'bg-[#f4cb00] text-dark-azul'; 
+        else if (classificacao === '14') corFundo = 'bg-[#e47622] text-branco'; 
+        else if (classificacao === '16') corFundo = 'bg-[#d81920] text-branco'; 
+        else if (classificacao === '18') corFundo = 'bg-[#1d1815] text-branco border border-branco/20'; 
+        else if (classificacao !== 'L') corFundo = 'bg-branco/20 text-branco w-auto px-1';
+
+        modalClassificacao.className = `w-5 h-5 flex items-center justify-center rounded-[3px] font-bold text-[11px] leading-none shadow-md ${corFundo}`
+        modalClassificacao.textContent = classificacao
 
         if(isFilme && detalhes.runtime){
             const horas = Math.floor(detalhes.runtime / 60);
@@ -505,3 +537,96 @@ btnCarregar.addEventListener('click', () => {
     }
 })
 
+function trocarTela(tela){
+    if(tela === 'busca'){
+        telaBuscar.classList.remove('hidden')
+        telaBuscar.classList.add('animate-aparecer')
+        telaRoleta.classList.add('hidden')
+        telaRoleta.classList.remove('animate-aparecer')
+    }else if(tela === 'roleta'){
+        telaRoleta.classList.remove('hidden')
+        telaRoleta.classList.add('animate-aparecer')
+        telaBuscar.classList.add('hidden')
+        telaBuscar.classList.remove('animate-aparecer')
+
+        abrirRoleta()
+    }
+}
+
+btnBuscar.addEventListener('click', () => trocarTela('busca'))
+btnRoleta.addEventListener('click', () => trocarTela('roleta'))
+
+const roletaPista = document.getElementById('roletaPista')
+const btnGirarRoleta = document.getElementById('btnGirarRoleta')
+
+let filmesRoleta = []
+async function abrirRoleta(){
+    if(filmesRoleta.length > 0) return
+
+    const paginaAleatoria = Math.floor(Math.random() * 5) + 1
+    const url = `${TMDB_CONFIG.BASE_URL}/discover/movie?api_key=${TMDB_CONFIG.API_KEY}&language=${TMDB_CONFIG.LANGUAGE}&watch_region=BR&with_watch_monetization_types=flatrate&page=${paginaAleatoria}`;
+    try{
+        const resposta = await fetch(url)
+        const dados = await resposta.json()
+
+        filmesRoleta = dados.results.filter(filme => filme.poster_path)
+
+        renderizarFilmesRoleta(filmesRoleta)
+    } catch(error) {
+        console.log("Erro ao buscar filmes da roleta: ", error);
+    }
+}
+
+function renderizarFilmesRoleta(filmes){
+    roletaPista.innerHTML = ""
+
+    roletaPista.style.transition = 'none'
+    roletaPista.style.transform = 'translateX(0)'
+
+    const filmesDuplicados = [...filmes, ...filmes, ...filmes, ...filmes]
+
+    filmesDuplicados.forEach(filme => {
+        const posterUrl = `${TMDB_CONFIG.IMAGE_BASE_URL}${filme.poster_path}`
+
+        const img = document.createElement('img')
+        img.src = posterUrl
+
+        img.className = "h-full w-auto object-cover rounded-md border border-branco/10 shadow-md shrink-0"
+        img.alt = filme.title
+
+        roletaPista.appendChild(img)
+    })
+
+    setTimeout(() => {
+        roletaPista.style.transition = 'transform 5000ms cubic-bezier(0.15,1,0.3,1)'
+    }, 50)
+}
+
+btnGirarRoleta.addEventListener('click', () =>{
+    btnGirarRoleta.disabled = true
+    btnGirarRoleta.classList.add('opacity-50', 'cursor-not-allowed')
+
+    const filmeSorteado = Math.floor(Math.random() * 35) + 40
+
+    const posterVencedor = roletaPista.children[filmeSorteado] // pega a img de dentro do roletaPista
+
+    const visorRoleta = roletaPista.parentElement
+    const centroRoleta = visorRoleta.clientWidth / 2
+    const centroPoster = posterVencedor.clientWidth / 2
+    const posicaoEsquerdaPoster = posterVencedor.offsetLeft
+
+    const deslizeX = -(posicaoEsquerdaPoster) + centroRoleta - centroPoster
+
+    roletaPista.style.transform = `translateX(${deslizeX}px)`
+
+    setTimeout(() =>{
+        const filmeApi = filmesRoleta[filmeSorteado % filmesRoleta.length]
+
+        initModalDetalhes(filmeApi.id, 'movie')
+
+        btnGirarRoleta.disabled = false
+        btnGirarRoleta.classList.remove('opacity-50', 'cursor-not-allowed')
+
+        renderizarFilmesRoleta(filmesRoleta)
+    }, 5500)
+})

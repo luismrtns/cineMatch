@@ -83,7 +83,7 @@
       }
     </style>
   </head>
-  <body class="min-h-screen bg-dark-azul text-branco">
+  <body class="min-h-screen flex flex-col bg-dark-azul text-branco">
     <header>
       <h1 class="flex items-center justify-center gap-4 font-bebas text-6xl text-center py-4 text-dourado text-shadow-salmao text-shadow-md">
         CineMatch
@@ -94,18 +94,18 @@
       </h1>
       <ul class="flex flex-wrap gap-4 sm:gap-6 items-center justify-center font-mono px-4">
         <li>
-          <button class="group flex gap-2 cursor-pointer rounded-full border-2 border-light-roxo/50 hover:text-dourado bg-dark-roxo shadow-light-roxo transition-all duration-200 hover:shadow-[3px_3px_0_rgba(0,0,0,1)] py-2 px-6">
+          <button id="btnBuscar" class="group flex gap-2 cursor-pointer rounded-full border-2 border-light-roxo/50 hover:text-dourado bg-dark-roxo shadow-light-roxo transition-all duration-200 hover:shadow-[3px_3px_0_rgba(0,0,0,1)] py-2 px-6">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="fill-[#9a8fc0] group-hover:fill-dourado" viewBox="0 0 256 256"><path d="M192,112a80,80,0,1,1-80-80A80,80,0,0,1,192,112Z" opacity="0.2"></path><path d="M229.66,218.34,179.6,168.28a88.21,88.21,0,1,0-11.32,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"></path></svg>
             <span class="hidden sm:inline">Buscar</span>
           </button>
         </li>
         <li>
-          <button class="group flex gap-2 cursor-pointer rounded-full border-2 border-light-roxo/50 hover:text-dourado bg-dark-roxo shadow-light-roxo transition-all duration-200 hover:shadow-[3px_3px_0_rgba(0,0,0,1)] py-2 px-6">
+          <button id="btnRoleta" class="group flex gap-2 cursor-pointer rounded-full border-2 border-light-roxo/50 hover:text-dourado bg-dark-roxo shadow-light-roxo transition-all duration-200 hover:shadow-[3px_3px_0_rgba(0,0,0,1)] py-2 px-6">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="fill-[#9a8fc0] group-hover:fill-dourado" viewBox="0 0 256 256"><path d="M216,64V192a24,24,0,0,1-24,24H64a24,24,0,0,1-24-24V64A24,24,0,0,1,64,40H192A24,24,0,0,1,216,64Z" opacity="0.2"></path><path d="M192,32H64A32,32,0,0,0,32,64V192a32,32,0,0,0,32,32H192a32,32,0,0,0,32-32V64A32,32,0,0,0,192,32Zm16,160a16,16,0,0,1-16,16H64a16,16,0,0,1-16-16V64A16,16,0,0,1,64,48H192a16,16,0,0,1,16,16Zm-96-92a12,12,0,1,1-12-12A12,12,0,0,1,112,100Zm56,0a12,12,0,1,1-12-12A12,12,0,0,1,168,100Zm-56,56a12,12,0,1,1-12-12A12,12,0,0,1,112,156Zm56,0a12,12,0,1,1-12-12A12,12,0,0,1,168,156Z"></path></svg>
             <span class="hidden sm:inline">Roleta</span>
           </button></li>
         <li>
-          <button class="group flex gap-2 cursor-pointer rounded-full border-2 border-light-roxo/50 hover:text-dourado bg-dark-roxo shadow-light-roxo transition-all duration-200 hover:shadow-[3px_3px_0_rgba(0,0,0,1)] py-2 px-6">
+          <button id="btnQuiz" class="group flex gap-2 cursor-pointer rounded-full border-2 border-light-roxo/50 hover:text-dourado bg-dark-roxo shadow-light-roxo transition-all duration-200 hover:shadow-[3px_3px_0_rgba(0,0,0,1)] py-2 px-6">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="fill-[#9a8fc0] group-hover:fill-dourado" viewBox="0 0 256 256"><path d="M67.71,64.59l47.79,27.6L40.43,112,32.27,82a7.76,7.76,0,0,1,5.58-9.52ZM199.84,37.76a7.9,7.9,0,0,0-9.66-5.49L126.61,49.05,174.4,76.64,208,67.77Z" opacity="0.2"></path><path d="M216,104H102.09L210,75.51a8,8,0,0,0,5.68-9.84l-8.16-30a15.93,15.93,0,0,0-19.42-11.13L35.81,64.74a15.75,15.75,0,0,0-9.7,7.4,15.51,15.51,0,0,0-1.55,12L32,111.56c0,.14,0,.29,0,.44v88a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V112A8,8,0,0,0,216,104ZM192.16,40l6,22.07-22.62,6L147.42,51.83Zm-66.69,17.6,28.12,16.24-36.94,9.75L88.53,67.37Zm-79.4,44.62-6-22.08,26.5-7L94.69,89.4ZM208,200H48V120H208v80Z"></path></svg>
             <span class="hidden sm:inline">Quiz</span>
           </button>
@@ -113,40 +113,93 @@
       </ul>
 
     </header>
-    <main class="mx-auto flex min-h-screen max-w-6xl flex-col justify-center px-6">
-      <form id="searchForm" class="mt-8 flex justify-center w-full max-w-2xl mx-auto border-b-2 border-salmao/10 pb-8 px-4 sm:px-0">
-        <div class="relative w-full group">
-          <div class="absolute inset-y-0 left-0 flex items-center pl-5 pointer-events-none">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="fill-branco/40 group-focus-within:fill-dourado transition-colors duration-300" viewBox="0 0 256 256"><path d="M192,112a80,80,0,1,1-80-80A80,80,0,0,1,192,112Z" opacity="0.2"></path><path d="M229.66,218.34,179.6,168.28a88.21,88.21,0,1,0-11.32,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"></path></svg>
+    <main class="mx-auto flex flex-1 w-full max-w-6xl flex-col justify-start pt-4 px-6">
+      <!--tela de busca-->
+      <div id="telaBusca" class="block w-full">
+        <form id="searchForm" class="mt-8 flex justify-center w-full max-w-2xl mx-auto pb-6 md:pb-4 px-4 sm:px-0">
+          <div class="relative w-full group">
+            <div class="absolute inset-y-0 left-0 flex items-center pl-5 pointer-events-none">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                   class="fill-branco/40 group-focus-within:fill-dourado transition-colors duration-300"
+                   viewBox="0 0 256 256">
+                <path d="M192,112a80,80,0,1,1-80-80A80,80,0,0,1,192,112Z" opacity="0.2"></path>
+                <path d="M229.66,218.34,179.6,168.28a88.21,88.21,0,1,0-11.32,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"></path>
+              </svg>
+            </div>
+
+            <input id="searchInput" type="search" placeholder="Busque por filmes ou séries..."
+                   class="w-full rounded-full bg-branco/5 border border-branco/10 pl-14 pr-6 py-4 text-branco placeholder-branco/40 outline-none focus:bg-branco/10 focus:border-dourado/50 focus:ring-4 focus:ring-dourado/10 transition-all duration-300 font-inter text-lg shadow-lg">
+
+            <button type="submit" class="hidden"></button>
+          </div>
+        </form>
+        
+        <!-- Linha separadora visível apenas no mobile (Abaixo da busca) -->
+        <div class="block md:hidden w-full max-w-xs mx-auto h-[2px] bg-gradient-to-r from-salmao via-dourado to-light-roxo shadow-[0_0_10px_rgba(245,185,66,0.3)] rounded-full mt-2 mb-4"></div>
+        
+        <!--sessão de cards dos filmes-->
+        <section class="mx-auto flex flex-col gap-6 min-h-screen max-w-6xl px-4 py-6 sm:px-6 mt-4">
+          <!--filtros-->
+          <div class="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-8">
+            <h1 id="tituloSecao"
+                class="font-bebas text-5xl sm:text-6xl text-dourado py-2 sm:py-4 text-center md:text-left transition-all duration-300 transform whitespace-nowrap">
+              Em alta</h1>
+              
+            <!-- Linha de Brilho -->
+            <div class="hidden md:block flex-1 h-[2px] bg-gradient-to-r from-salmao via-dourado to-light-roxo shadow-[0_0_10px_rgba(245,185,66,0.3)] mx-4 rounded-full"></div>
+
+            <ul class="flex flex-wrap justify-center gap-2 sm:gap-4 shrink-0">
+              <li id="todos"
+                  class="text-lg sm:text-xl font-bebas text-salmao border border-branco/10 bg-branco/5 hover:border-salmao/50 backdrop-blur-lg px-4 sm:px-6 py-1 sm:py-2 rounded-full transition-all duration-200 cursor-pointer">
+                Todos
+              </li>
+              <li id="filmes"
+                  class="text-lg sm:text-xl font-bebas text-salmao border border-branco/10 bg-branco/5 hover:border-salmao/50 backdrop-blur-lg px-4 sm:px-6 py-1 sm:py-2 rounded-full transition-all duration-200 cursor-pointer">
+                Filmes
+              </li>
+              <li id="series"
+                  class="text-lg sm:text-xl font-bebas text-salmao border border-branco/10 bg-branco/5 hover:border-salmao/50 backdrop-blur-lg px-4 sm:px-6 py-1 sm:py-2 rounded-full transition-all duration-200 cursor-pointer">
+                Séries
+              </li>
+            </ul>
+          </div>
+          <!--filmes-->
+          <div id="containerFilmes"
+               class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 mt-4">
+            <!-- Os cards dinâmicos serão inseridos aqui -->
           </div>
 
-          <input id="searchInput" type="search" placeholder="Busque por filmes ou séries..." class="w-full rounded-full bg-branco/5 border border-branco/10 pl-14 pr-6 py-4 text-branco placeholder-branco/40 outline-none focus:bg-branco/10 focus:border-dourado/50 focus:ring-4 focus:ring-dourado/10 transition-all duration-300 font-inter text-lg shadow-lg">
+          <div class="flex justify-center mt-8 hidden" id="containerCarregarMais">
+            <button id="btnCarregarMais"
+                    class="bg-dark-azul border border-dourado text-dourado hover:bg-dourado hover:text-dark-azul font-bebas text-xl px-12 py-3 rounded-full transition-all duration-300 shadow-[0_0_15px_rgba(245,185,66,0.2)] hover:shadow-[0_0_25px_rgba(245,185,66,0.5)] cursor-pointer">
+              Carregar Mais
+            </button>
+          </div>
+        </section>
+      </div>
 
-          <button type="submit" class="hidden"></button>
-        </div>
-      </form>
-      <!--sessão de cards dos filmes-->
-      <section class="mx-auto flex flex-col gap-6 min-h-screen max-w-6xl px-4 py-6 sm:px-6 mt-4">
-        <!--filtros-->
-        <div class="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-8">
-          <h1 id="tituloSecao" class="font-bebas text-5xl sm:text-6xl text-dourado py-2 sm:py-4 text-center md:text-left transition-all duration-300 transform">Em alta</h1>
-          <ul class="flex flex-wrap justify-center gap-2 sm:gap-4">
-            <li id="todos" class="text-lg sm:text-xl font-bebas text-salmao border border-branco/10 bg-branco/5 hover:border-salmao/50 backdrop-blur-lg px-4 sm:px-6 py-1 sm:py-2 rounded-full transition-all duration-200 cursor-pointer">Todos</li>
-            <li id="filmes" class="text-lg sm:text-xl font-bebas text-salmao border border-branco/10 bg-branco/5 hover:border-salmao/50 backdrop-blur-lg px-4 sm:px-6 py-1 sm:py-2 rounded-full transition-all duration-200 cursor-pointer">Filmes</li>
-            <li id="series" class="text-lg sm:text-xl font-bebas text-salmao border border-branco/10 bg-branco/5 hover:border-salmao/50 backdrop-blur-lg px-4 sm:px-6 py-1 sm:py-2 rounded-full transition-all duration-200 cursor-pointer">Séries</li>
-          </ul>
-        </div>
-        <!--filmes-->
-        <div id="containerFilmes" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 mt-4">
-          <!-- Os cards dinâmicos serão inseridos aqui -->
-        </div>
+      <!--tela de roleta-->
+      <div id="telaRoleta" class="hidden w-full flex flex-col items-center justify-center min-h-[60vh] mt-6">
+        <div class="bg-branco/5 border border-branco/10 rounded-2xl p-6 sm:p-8 backdrop-blur-md flex flex-col items-center shadow-lg w-full max-w-3xl relative overflow-hidden">
 
-        <div class="flex justify-center mt-8 hidden" id="containerCarregarMais">
-          <button id="btnCarregarMais" class="bg-dark-azul border border-dourado text-dourado hover:bg-dourado hover:text-dark-azul font-bebas text-xl px-12 py-3 rounded-full transition-all duration-300 shadow-[0_0_15px_rgba(245,185,66,0.2)] hover:shadow-[0_0_25px_rgba(245,185,66,0.5)] cursor-pointer">
-            Carregar Mais
+          <h2 class="font-bebas text-3xl sm:text-4xl text-dourado mb-2 text-center z-10">Roleta Surpresa</h2>
+          <p class="text-branco/70 mb-6 text-center text-sm sm:text-base z-10 font-inter">Não sabe o que assistir? Aperte o botão e descubra!</p>
+
+          <div class="relative w-full max-w-2xl h-48 sm:h-64 overflow-hidden rounded-xl bg-dark-azul border border-branco/20 shadow-inner mb-6 z-10">
+            <div class="absolute inset-y-0 left-1/2 w-1.5 bg-dourado z-20 shadow-[0_0_15px_rgba(245,185,66,1)] -translate-x-1/2"></div>
+            <div id="roletaPista" class="absolute top-0 left-0 h-full flex transition-transform duration-5000 ease-[cubic-bezier(0.15,1,0.3,1)]">
+              <!-- JS -->
+            </div>
+          </div>
+          <button id="btnGirarRoleta" class="flex gap-1 items-center z-10 bg-salmao text-dark-azul hover:bg-dourado font-bold font-mono text-lg px-8 py-3 rounded-full transition-all duration-300 shadow-[0_0_20px_rgba(255,111,97,0.4)] hover:shadow-[0_0_30px_rgba(245,185,66,0.6)] cursor-pointer">
+            GIRAR ROLETA
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="#0b0b14" viewBox="0 0 256 256">
+              <path d="M216,64V192a24,24,0,0,1-24,24H64a24,24,0,0,1-24-24V64A24,24,0,0,1,64,40H192A24,24,0,0,1,216,64Z" opacity="0.2"></path><path d="M192,32H64A32,32,0,0,0,32,64V192a32,32,0,0,0,32,32H192a32,32,0,0,0,32-32V64A32,32,0,0,0,192,32Zm16,160a16,16,0,0,1-16,16H64a16,16,0,0,1-16-16V64A16,16,0,0,1,64,48H192a16,16,0,0,1,16,16Zm-96-92a12,12,0,1,1-12-12A12,12,0,0,1,112,100Zm56,0a12,12,0,1,1-12-12A12,12,0,0,1,168,100Zm-56,56a12,12,0,1,1-12-12A12,12,0,0,1,112,156Zm56,0a12,12,0,1,1-12-12A12,12,0,0,1,168,156Z">
+              </path>
+            </svg>
           </button>
         </div>
-      </section>
+      </div>
     </main>
 <!--    modal de detalhes-->
     <div id="modalDetalhes" class="fixed inset-0 z-50 flex items-center justify-center p-6 sm:p-10 bg-dark-azul/90 backdrop-blur-md hidden transition-all duration-300">
@@ -208,6 +261,11 @@
                 <img src="img/star-duotone.svg" class="w-4 h-4" alt="">
                 <span id="modalNota">0.0</span>
               </span>
+              <!--classificação indicativa-->
+              <span id="modalClassificacao" class="w-5 h-5 flex items-center justify-center rounded-[3px] text-branco font-bold text-[11px] leading-none shadow-md">
+                <!-- JS -->
+              </span>
+
               <!-- Duração -->
               <span id="modalDuracao" class="flex items-center gap-1.5">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 opacity-75 text-light-roxo" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
